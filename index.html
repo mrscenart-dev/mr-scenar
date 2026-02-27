@@ -477,12 +477,16 @@
     import { getDatabase, ref, onValue, push, get, set } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
     // 🔧 REMPLACE CES VALEURS PAR CELLES DE TON PROJET FIREBASE
-    const firebaseConfig = {
-      apiKey: "VOTRE_API_KEY",
-      authDomain: "VOTRE_PROJECT.firebaseapp.com",
-      databaseURL: "https://VOTRE_PROJECT-default-rtdb.firebaseio.com",
-      projectId: "VOTRE_PROJECT",
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSy....",
+  authDomain: "mr-scenart.firebaseapp.com",
+  databaseURL: "https://mr-scenart-default-rtdb.firebaseio.com",
+  projectId: "mr-scenart",
+  storageBucket: "mr-scenart.appspot.com",
+  messagingSenderId: "393331469487",
+  appId: "1:393331469487:web:ca88a5ef5556100541785a",
+  measurementId: "G-BP0D9SF51N"
+};
 
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
