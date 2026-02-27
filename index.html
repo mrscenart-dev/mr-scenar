@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mr. Scenart — Liste d'attente</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --noir: #08090f;
+      --bleu: #1a4fd6;
+      --bleu-clair: #4d7fff;
+      --bleu-nuit: #0d1a3a;
+      --creme: #e8edf8;
+      --gris: #7a8aaa;
+      --blanc: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--noir);
+      color: var(--creme);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Grain texture overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.5;
+    }
+
+    /* ── Ambient light ── */
+    .ambient {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,79,214,0.18) 0%, transparent 70%);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+      animation: pulse 6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.08); }
+    }
+
+    /* ── Header / Nav ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 4rem;
+      position: relative;
+      z-index: 10;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--blanc);
+    }
+
+    .logo span {
+      color: var(--bleu-clair);
+    }
+
+    .badge {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--bleu-clair);
+      border: 1px solid rgba(77,127,255,0.3);
+      padding: 0.4rem 1rem;
+      border-radius: 2rem;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 5rem 2rem 4rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--bleu-clair);
+      margin-bottom: 1.8rem;
+      animation: fadeUp 0.8s 0.2s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 7vw, 6rem);
+      line-height: 1.08;
+      font-weight: 700;
+      max-width: 820px;
+      animation: fadeUp 0.8s 0.35s ease both;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--bleu-clair);
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--gris);
+      max-width: 540px;
+      line-height: 1.75;
+      margin-top: 1.6rem;
+      animation: fadeUp 0.8s 0.5s ease both;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--or), transparent);
+      margin: 2.5rem auto;
+      animation: fadeUp 0.8s 0.6s ease both;
+    }
+
+    /* ── Pillars ── */
+    .pillars {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      padding: 0 2rem;
+      margin-bottom: 4rem;
+      animation: fadeUp 0.8s 0.65s ease both;
+      position: relative;
+      z-index: 10;
+    }
+
+    .pillar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--gris);
+    }
+
+    .pillar::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--bleu-clair);
+      flex-shrink: 0;
+    }
+
+    /* ── Form Card ── */
+    .form-section {
+      display: flex;
+      justify-content: center;
+      padding: 0 2rem 6rem;
+      position: relative;
+      z-index: 10;
+      animation: fadeUp 0.8s 0.8s ease both;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(77,127,255,0.25);
+      border-radius: 16px;
+      padding: 3rem 3.5rem;
+      max-width: 480px;
+      width: 100%;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--or), transparent);
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      color: var(--gris);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .form-group {
+      position: relative;
+      margin-bottom: 1.2rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gris);
+      margin-bottom: 0.5rem;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    select {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem;
+      color: var(--creme);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s;
+      -webkit-appearance: none;
+    }
+
+    select option {
+      background: #1a1a1a;
+      color: var(--creme);
+    }
+
+    input::placeholder { color: rgba(255,255,255,0.2); }
+
+    input:focus, select:focus {
+      border-color: var(--bleu-clair);
+      background: rgba(77,127,255,0.05);
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 0.5rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--bleu), var(--bleu-clair));
+      border: none;
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--blanc);
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform 0.4s;
+    }
+
+    .btn:hover::after { transform: translateX(100%); }
+
+    .privacy {
+      text-align: center;
+      font-size: 0.72rem;
+      color: rgba(138,138,138,0.6);
+      margin-top: 1rem;
+    }
+
+    /* ── Success state ── */
+    .success {
+      display: none;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .success-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .success h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .success p {
+      font-size: 0.9rem;
+      color: var(--gris);
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.75rem;
+      color: rgba(138,138,138,0.4);
+      letter-spacing: 0.1em;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* ── Counter ── */
+    .counter-wrap {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin: 1rem 0 3.5rem;
+      animation: fadeUp 0.8s 0.72s ease both;
+      position: relative;
+      z-index: 10;
+    }
+
+    .counter-item { text-align: center; }
+
+    .counter-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--bleu-clair);
+      display: block;
+    }
+
+    .counter-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gris);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      nav { padding: 1.5rem 1.5rem; }
+      .card { padding: 2rem 1.5rem; }
+      .counter-wrap { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient"></div>
+
+  <nav>
+    <div class="logo">Mr.<span>Scenart</span></div>
+    <div class="badge">Bientôt disponible</div>
+  </nav>
+
+  <section class="hero">
+    <p class="hero-eyebrow">La plateforme de production cinématographique</p>
+    <h1>La création filmique,<br/><em>réinventée</em> de A à Z.</h1>
+    <p class="hero-sub">
+      Mr. Scenart accompagne et forme scénaristes, réalisateurs et acteurs tout au long de leur projet : accompagnement pro, partenariat et gestion des contrats en un seul endroit.
+    </p>
+    <div class="divider"></div>
+  </section>
+
+  <div class="pillars">
+    <div class="pillar">Mise en avant</div>
+    <div class="pillar">Accompagnement personnalisé</div>
+    <div class="pillar">Matchmaking caractérisé</div>
+    <div class="pillar">Partenariats de qualité et de confiance</div>
+  </div>
+
+  <div class="counter-wrap">
+    <div class="counter-item">
+      <span class="counter-num" id="cnt-inscrits">—</span>
+      <span class="counter-label">Inscrits</span>
+    </div>
+    <div class="counter-item">
+      <span class="counter-num">3</span>
+      <span class="counter-label">Métiers couverts</span>
+    </div>
+    <div class="counter-item">
+      <span class="counter-num">2026</span>
+      <span class="counter-label">Lancement prévu</span>
+    </div>
+  </div>
+
+  <section class="form-section">
+    <div class="card">
+
+      <div id="form-wrap">
+        <p class="card-title">Rejoindre la liste d'attente</p>
+        <p class="card-desc">Soyez parmi les premiers à accéder à Mr. Scenart dès l'ouverture. Nous vous contacterons en priorité.</p>
+
+        <form id="waitlist-form" novalidate>
+          <div class="form-group">
+            <label for="prenom">Prénom</label>
+            <input type="text" id="prenom" placeholder="Votre prénom" required />
+          </div>
+          <div class="form-group">
+            <label for="nom">Nom</label>
+            <input type="text" id="nom" placeholder="Votre nom" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Adresse e-mail</label>
+            <input type="email" id="email" placeholder="vous@exemple.com" required />
+          </div>
+          <div class="form-group">
+            <label for="role">Votre rôle dans la production</label>
+            <select id="role" required>
+              <option value="" disabled selected>Sélectionner votre rôle</option>
+              <option value="scenariste">Scénariste</option>
+              <option value="realisateur">Réalisateur / Réalisatrice</option>
+              <option value="acteur">Acteur / Actrice</option>
+            </select>
+          </div>
+          <button type="submit" class="btn">Je me pré-inscris</button>
+          <p class="privacy">🔒 Vos données restent privées. Aucun spam.</p>
+        </form>
+      </div>
+
+      <div class="success" id="success-msg">
+        <div class="success-icon">🎬</div>
+        <h3>Vous êtes sur la liste !</h3>
+        <p>Merci <strong id="success-name"></strong>. Nous vous contacterons en priorité dès l'ouverture de Mr. Scenart.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <footer>
+    © 2026 Mr. Scenart · Tous droits réservés
+  </footer>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getDatabase, ref, onValue, push, get, set } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+
+    // 🔧 REMPLACE CES VALEURS PAR CELLES DE TON PROJET FIREBASE
+    const firebaseConfig = {
+      apiKey: "VOTRE_API_KEY",
+      authDomain: "VOTRE_PROJECT.firebaseapp.com",
+      databaseURL: "https://VOTRE_PROJECT-default-rtdb.firebaseio.com",
+      projectId: "VOTRE_PROJECT",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    const countRef = ref(db, 'waitlist/count');
+    const inscrisEl = document.getElementById('cnt-inscrits');
+
+    // Écoute en temps réel le compteur
+    onValue(countRef, (snapshot) => {
+      const count = snapshot.val() || 0;
+      inscrisEl.textContent = count;
+    });
+
+    // Form submit
+    document.getElementById('waitlist-form').addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const prenom = document.getElementById('prenom').value.trim();
+      const nom = document.getElementById('nom').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const role = document.getElementById('role').value;
+
+      if (!prenom || !nom || !email || !role) {
+        alert('Veuillez remplir tous les champs.');
+        return;
+      }
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        alert('Veuillez entrer une adresse e-mail valide.');
+        return;
+      }
+
+      try {
+        // Enregistre l'inscription
+        const inscritsRef = ref(db, 'waitlist/inscrits');
+        await push(inscritsRef, { prenom, nom, email, role, date: new Date().toISOString() });
+
+        // Incrémente le compteur
+        const snapshot = await get(countRef);
+        await set(countRef, (snapshot.val() || 0) + 1);
+
+        // Affiche le message de succès
+        document.getElementById('form-wrap').style.display = 'none';
+        const success = document.getElementById('success-msg');
+        success.style.display = 'block';
+        document.getElementById('success-name').textContent = prenom;
+
+      } catch (err) {
+        console.error(err);
+        alert('Une erreur est survenue. Veuillez réessayer.');
+      }
+    });
+  </script>
+</body>
+</html>
