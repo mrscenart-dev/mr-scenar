@@ -470,75 +470,72 @@
   <footer>
     © 2026 Mr. Scenart · Tous droits réservés
   </footer>
-
+<!-- FORMULAIRE LISTE D’ATTENTE -->
+<form id="form-wrap">
+  <input type="text" id="prenom" placeholder="Prénom" required>
+  <input type="text" id="nom" placeholder="Nom" required>
+  <input type="email" id="email" placeholder="Email" required>
+  <button type="submit">S’inscrire</button>
+</form>
   <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-    import { getDatabase, ref, onValue, push, get, set } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    // 🔧 REMPLACE CES VALEURS PAR CELLES DE TON PROJET FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSy....",
-  authDomain: "mr-scenart.firebaseapp.com",
-  databaseURL: "https://mr-scenart-default-rtdb.firebaseio.com",
-  projectId: "mr-scenart",
-  storageBucket: "mr-scenart.appspot.com",
-  messagingSenderId: "393331469487",
-  appId: "1:393331469487:web:ca88a5ef5556100541785a",
-  measurementId: "G-BP0D9SF51N"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyDKhy4nvyonTgKQvF5PZO_DyetY55e7OYs",
+    authDomain: "mr-scenart.firebaseapp.com",
+    databaseURL: "https://mr-scenart-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "mr-scenart",
+    storageBucket: "mr-scenart.appspot.com",
+    messagingSenderId: "393331469487",
+    appId: "1:393331469487:web:ca88a5ef5556100541785a"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-    const countRef = ref(db, 'waitlist/count');
-    const inscrisEl = document.getElementById('cnt-inscrits');
+  const firebaseConfig = {
+    apiKey: "AIzaSy...",
+    authDomain: "mr-scenart.firebaseapp.com",
+    databaseURL: "https://mr-scenart-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "mr-scenart",
+    storageBucket: "mr-scenart.appspot.com",
+    messagingSenderId: "393331469487",
+    appId: "1:393331469487:web:ca88a5ef5556100541785a"
+  };
 
-    // Écoute en temps réel le compteur
-    onValue(countRef, (snapshot) => {
-      const count = snapshot.val() || 0;
-      inscrisEl.textContent = count;
-    });
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
 
-    // Form submit
-    document.getElementById('waitlist-form').addEventListener('submit', async function(e) {
-      e.preventDefault();
+  const form = document.getElementById("waitlist-form");
 
-      const prenom = document.getElementById('prenom').value.trim();
-      const nom = document.getElementById('nom').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const role = document.getElementById('role').value;
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-      if (!prenom || !nom || !email || !role) {
-        alert('Veuillez remplir tous les champs.');
-        return;
-      }
+    const prenom = document.getElementById("prenom").value;
+    const nom = document.getElementById("nom").value;
+    const email = document.getElementById("email").value;
 
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert('Veuillez entrer une adresse e-mail valide.');
-        return;
-      }
+    try {
+      await push(ref(db, "waitlist/inscrits"), {
+        prenom,
+        nom,
+        email,
+        date: new Date().toISOString()
+      });
 
-      try {
-        // Enregistre l'inscription
-        const inscritsRef = ref(db, 'waitlist/inscrits');
-        await push(inscritsRef, { prenom, nom, email, role, date: new Date().toISOString() });
+      alert("Inscription enregistrée ✅");
+      form.reset();
 
-        // Incrémente le compteur
-        const snapshot = await get(countRef);
-        await set(countRef, (snapshot.val() || 0) + 1);
-
-        // Affiche le message de succès
-        document.getElementById('form-wrap').style.display = 'none';
-        const success = document.getElementById('success-msg');
-        success.style.display = 'block';
-        document.getElementById('success-name').textContent = prenom;
-
-      } catch (err) {
-        console.error(err);
-        alert('Une erreur est survenue. Veuillez réessayer.');
-      }
-    });
-  </script>
+    } catch (error) {
+      console.error(error);
+      alert("Erreur Firebase ❌");
+    }
+  });
+</script>
 </body>
 </html>
