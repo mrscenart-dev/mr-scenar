@@ -513,7 +513,30 @@
   const db = getDatabase(app);
 
   const form = document.getElementById("waitlist-form");
+const form = document.getElementById("waitlist-form");
 
+form.addEventListener("submit", async (event) => {
+  event.preventDefault(); // ⛔ empêche le rechargement
+
+  const prenom = document.getElementById("prenom").value;
+  const nom = document.getElementById("nom").value;
+  const email = document.getElementById("email").value;
+
+  try {
+    const inscritsRef = ref(db, "waitlist/inscrits");
+    await push(inscritsRef, {
+      prenom,
+      nom,
+      email,
+      date: new Date().toISOString()
+    });
+
+    alert("Inscription enregistrée !");
+  } catch (err) {
+    console.error(err);
+    alert("Erreur Firebase");
+  }
+});
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
