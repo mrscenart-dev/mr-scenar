@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>À Propos — Mr. Scenart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --noir: #08090f;
+      --bleu: #1a4fd6;
+      --bleu-clair: #4d7fff;
+      --creme: #e8edf8;
+      --gris: #7a8aaa;
+      --blanc: #ffffff;
+    }
+
+    body {
+      background-color: var(--noir);
+      color: var(--creme);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Effet de grain */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.5;
+    }
+
+    /* Lumière d'ambiance */
+    .ambient {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(26,79,214,0.15) 0%, transparent 70%);
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 2rem 4rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--blanc);
+      text-decoration: none;
+    }
+
+    .logo span { color: var(--bleu-clair); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--gris);
+      text-decoration: none;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: color 0.3s;
+    }
+
+    .nav-link:hover { color: var(--bleu-clair); }
+
+    /* Contenu */
+    .content-section {
+      max-width: 800px;
+      margin: 4rem auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 10;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      margin-bottom: 2rem;
+      color: var(--blanc);
+    }
+
+    h1 em { color: var(--bleu-clair); font-style: italic; }
+
+    .about-text {
+      color: var(--gris);
+      font-size: 1.1rem;
+      margin-bottom: 3rem;
+      text-align: left;
+    }
+
+    .card-vision {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(77,127,255,0.2);
+      padding: 3rem;
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      text-align: left;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: var(--blanc);
+    }
+
+    footer {
+      text-align: center;
+      padding: 4rem 2rem;
+      font-size: 0.75rem;
+      color: rgba(138,138,138,0.4);
+      letter-spacing: 0.1em;
+    }
+
+    @media (max-width: 600px) {
+      nav { padding: 1.5rem; }
+      .nav-links { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="ambient"></div>
+
+  <nav>
+    <a href="index.html" class="logo">Mr.<span>Scenart</span></a>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Accueil</a>
+      <div style="font-size: 0.7rem; color: var(--bleu-clair); border: 1px solid rgba(77,127,255,0.3); padding: 0.4rem 1rem; border-radius: 2rem; text-transform: uppercase;">Projet 2026</div>
+    </div>
+  </nav>
+
+  <section class="content-section">
+    <h1>Derrière le <em>Scénario</em></h1>
+    
+    <div class="about-text">
+      <p>Mr. Scenart n'est pas seulement une plateforme technique. C'est une réponse à la fragmentation du monde de la production cinématographique. </p>
+      <br>
+      <p>Nous avons constaté que trop de projets de qualité restaient dans les tiroirs, faute de connexions fluides entre les auteurs, les techniciens et les talents devant la caméra.</p>
+    </div>
+
+    <div class="card-vision">
+      <h2>Notre Vision</h2>
+      <p style="color: var(--gris); margin-bottom: 1.5rem;">
+        Nous créons un écosystème où la créativité rencontre la structure. Un lieu où un scénariste peut trouver son réalisateur, et où un acteur peut s'investir dans un projet qui a du sens, le tout encadré par des outils professionnels.
+      </p>
+      <p style="color: var(--bleu-clair); font-weight: 500;">
+        Accompagner, Connecter, Produire.
+      </p>
+    </div>
+
+    <p style="margin-top: 4rem; color: rgba(122, 138, 170, 0.5); font-size: 0.9rem;">
+      Lancement officiel prévu au premier trimestre 2026.
+    </p>
+  </section>
+
+  <footer>
+    © 2026 Mr. Scenart · Tous droits réservés
+  </footer>
+
+</body>
+</html>
