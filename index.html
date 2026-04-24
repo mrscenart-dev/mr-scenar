@@ -1,15 +1,95 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-BP0D9SF51N"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon Site GitHub</title>
 
-  gtag('config', 'G-BP0D9SF51N');
-</script>
+    <style>
+        #cookie-banner {
+            position: fixed;
+            bottom: 20px;
+            left: 5%;
+            width: 90%;
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            display: none; /* Caché par défaut */
+            z-index: 9999;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .btn-cookie {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-accept { background: #27ae60; color: white; }
+        .btn-refuse { background: #e74c3c; color: white; }
+    </style>
+
+    <script>
+        function loadGoogleAnalytics() {
+            var script = document.createElement('script');
+            script.async = true;
+            script.src = "https://www.googletagmanager.com/gtag/js?id=G-BP0D9SF51N";
+            document.head.appendChild(script);
+
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-BP0D9SF51N');
+            console.log("Google Analytics activé !");
+        }
+    </script>
+</head>
+
+<body>
+
+    <div id="cookie-banner">
+        <span>🍪 Ce site utilise des cookies pour analyser le trafic et améliorer votre expérience.</span>
+        <button class="btn-cookie btn-accept" onclick="acceptCookies()">Accepter</button>
+        <button class="btn-cookie btn-refuse" onclick="refuseCookies()">Refuser</button>
+    </div>
+
+    <h1>Mon site est maintenant protégé et conforme</h1>
+
+    <script>
+        const banner = document.getElementById('cookie-banner');
+
+        // Au chargement de la page
+        window.onload = function() {
+            const consent = localStorage.getItem('cookieConsent');
+            
+            if (consent === 'accepted') {
+                loadGoogleAnalytics(); // Déjà accepté, on lance Analytics
+            } else if (consent === null) {
+                banner.style.display = 'block'; // Pas encore de choix, on montre la bannière
+            }
+        };
+
+        function acceptCookies() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            banner.style.display = 'none';
+            loadGoogleAnalytics(); // On lance Analytics immédiatement
+        }
+
+        function refuseCookies() {
+            localStorage.setItem('cookieConsent', 'refused');
+            banner.style.display = 'none';
+            // On ne lance rien, Analytics reste bloqué
+        }
+    </script>
+
+</body>
+</html>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mr. Scenart — Liste d'attente</title>
